@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { Platform, Text, View, StyleSheet } from 'react-native';
 import { Constants, Location, Permissions } from 'expo';
 var num = 1;
-var format='';
-var format2='';
-var lat1='';
-var lng1='';
-var sgn='';
+var format = '';
+var format2 = '';
+var lat1 = '';
+var lng1 = '';
+var sgn = '';
 
 
 export default class App extends Component {
@@ -16,13 +16,13 @@ export default class App extends Component {
     lat: null,
     lng: null,
     date: '',
-    data:'',
+    data: ''
   };
-  
-  SendUDP = _ =>{
+
+  SendUDP = _ => {
     num += 1;
     this.setState({
-      entra: 'entró'+ num.toString(),
+      entra: 'entró' + num.toString(),
     });
     var that = this;
     var date = new Date().getDate(); //Current Date
@@ -35,25 +35,52 @@ export default class App extends Component {
       //Setting the value of the date time
       date:
         year + '-' + month + '-' + date + ' ' + hours + ':' + min + ':' + sec,
-      
-      });
-      function calcular(){
-        var fechaini = new Date('1980-01-06');
-        var fechafin = new Date();
-        var diasem= fechafin.getDay();
-        var diasdif= fechafin.getTime()-fechaini.getTime();
-        var contdias = Math.round(diasdif/(1000*60*60*24));
-        var contsem=Math.round(contdias/7);
-        var hora=Math.round(hours*3600+min*60+sec+18000);
-        format='>REV44'+contsem+diasem+hora;
+
+    });
+    function calcular() {
+      var fechaini = new Date('1980-01-06');
+      var fechafin = new Date();
+      var diasem = fechafin.getDay();
+      var diasdif = fechafin.getTime() - fechaini.getTime();
+      var contdias = Math.round(diasdif / (1000 * 60 * 60 * 24));
+      var contsem = Math.round(contdias / 7);
+      var hora = Math.round(hours * 3600 + min * 60 + sec + 18000);
+      format = '>REV44' + contsem + diasem + hora;
+    }
+    calcular()
+    this._getLocationAsync();
+    if (this.state.errorMessage) {
+    } else if (this.state.location) {
+      this.setState({
+        lat : this.state.location.coords.latitude
+      })
+      if (Math.sign(this.state.lat) == 1) {
+        lat1 = Math.round(this.state.lat * 100000);
+        sgn = '+'
+        lat1 = sgn + lat1;
+      } else {
+        lat1 = Math.round(this.state.lat * 100000);
+        sgn = '-'
+        lat1 = sgn + lat1;
       }
-      calcular()    
+      this.setState({
+        lng : this.state.location.coords.longitude
+      })
+      if (Math.sign(this.state.lng) == 1) {
+        lng1 = Math.round(this.state.lng * 100000);
+        sgn = '+0'
+        lng1 = sgn + lng1;
+      } else {
+        lng1 = Math.round(this.state.lng * -100000);
+        sgn = '-0'
+        lng1 = sgn + lng1;
+      }
+      format2 = format + lat1 + lng1 + '00014612;ID=357042062915567<';
+    }
   }
   componentDidMount() {
     this.SendUDP();
-    this._getLocationAsync();
     this.interval = setInterval(() => this.SendUDP(), 5000);
-    this.interval2 = setInterval(() => this._getLocationAsync(), 5000);    
   }
 
   componentWillMount() {
@@ -76,47 +103,15 @@ export default class App extends Component {
       });
     }
     let location = await Location.getCurrentPositionAsync({});
-    this.setState({ location });    
+    this.setState({ location });
   };
 
   render() {
-    let text = 'Waiting..';
-    let lat = '';
-    let lng ='';
-    let data='';
-    if (this.state.errorMessage) {
-      text = this.state.errorMessage;
-    } else if (this.state.location) {
-      text='';
-      lat = this.state.location.coords.latitude;
-      if (Math.sign(lat)==1){
-          lat1=Math.round(lat*100000);
-          sgn='+'
-          lat1=sgn+lat1;
-      } else{
-        lat1=Math.round(lat*100000);
-        sgn='-'
-        lat1=sgn+lat1;
-      }
-      lng = this.state.location.coords.longitude;
-      if (Math.sign(lng)==1){
-          lng1=Math.round(lng*100000);
-          sgn='+0'
-          lng1=sgn+lng1;
-      } else{
-        lng1=Math.round(lng*-100000);
-        sgn='-0'
-        lng1=sgn+lng1;
-      }
-      format2=format+lat1+lng1+'00014612;ID=357042062915567<';
-    }
-      
     return (
       <View style={styles.container}>
         <Text style={styles.paragraph}>
-          {text}{'\n'}
-          Latitud:{lat}{'\n'}
-          Longitud:{lng}{'\n'}
+          Latitud:{this.state.lat}{'\n'}
+          Longitud:{this.state.lng}{'\n'}
           {this.state.date}{'\n'}
           {format2}
         </Text>

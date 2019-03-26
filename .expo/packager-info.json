@@ -1,10 +1,10 @@
 {
   "devToolsPort": 19002,
-  "expoServerPort": null,
-  "packagerPort": null,
-  "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "expoServerPort": 19000,
+  "packagerPort": 19001,
+  "packagerPid": 21100,
+  "expoServerNgrokUrl": "https://6c-par.anonymous.appdiseno.exp.direct",
+  "packagerNgrokUrl": "https://packager.6c-par.anonymous.appdiseno.exp.direct",
+  "ngrokPid": 21146,
   "webpackServerPort": null
 }
