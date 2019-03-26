@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Platform, Text, View, StyleSheet } from 'react-native';
 import { Constants, Location, Permissions } from 'expo';
+import dgram from 'dgram';
 var num = 1;
 var format = '';
 var format2 = '';
@@ -19,7 +20,7 @@ export default class App extends Component {
     data: ''
   };
 
-  SendUDP = _ => {
+  Armar = _ => {
     num += 1;
     this.setState({
       entra: 'entró' + num.toString(),
@@ -76,10 +77,22 @@ export default class App extends Component {
         lng1 = sgn + lng1;
       }
       format2 = format + lat1 + lng1 + '00014612;ID=357042062915567<';
+      SendUDP();
     }
   }
+  SendUDP = _ => {
+    const socket = dgram.createSocket('udp4');
+    socket.bind(12345)
+    socket.once('listening', function(){
+      var message = Buffer(format2);  
+      socket.send(message,0,message.length,'45826','3.95.47.65', function(err){
+        if(err) throw err
+        console.log('message was sent')
+      });
+    })
+  }
   componentDidMount() {
-    this.SendUDP();
+    this.Armar();
     this.interval = setInterval(() => this.SendUDP(), 5000);
   }
 
@@ -92,7 +105,6 @@ export default class App extends Component {
       this._getLocationAsync();
     }
     clearInterval(this.interval);
-    clearInterval(this.interval2);
   }
 
   _getLocationAsync = async () => {

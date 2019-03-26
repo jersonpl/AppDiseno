@@ -10,6 +10,7 @@
     "dgram": "react-native-udp"
   },
   "dependencies": {
+    "brew": "0.0.8",
     "buffer": "^5.2.1",
     "expo": "^32.0.0",
     "expo-sqlite": "^4.0.0",
