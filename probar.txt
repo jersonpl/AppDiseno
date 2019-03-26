@@ -1,0 +1,12 @@
+//import dgram from 'dgram';
+/*
+    const socket = dgram.createSocket('udp4');
+    socket.bind(12345)
+    socket.once('listening', function(){
+      var message = toByteArray(">REV442039316285+1000000-0700000700014612;ID=357042062915567<");  
+      socket.send(message,0,message.length, '45826', '3.95.47.65', function(err){
+        if(err) throw err
+        console.log('message was sent')
+      });
+    })
+    */
